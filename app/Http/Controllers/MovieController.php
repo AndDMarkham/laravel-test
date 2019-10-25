@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use App\Movie;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
@@ -91,5 +92,15 @@ class MovieController extends Controller
         $movies = $query_builder->get();
 
         return $movies;
+    }
+
+
+    public function get_movie(Request $request)
+    {
+        $id = $request->input('id');
+
+        return Movie::find($id);
+
+
     }
 }

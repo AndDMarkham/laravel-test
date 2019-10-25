@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use App\Collection;
 use App\Genre;
+use App\User;
 use Illuminate\Http\Request;
 
 class CollectionController extends Controller
@@ -28,5 +29,16 @@ class CollectionController extends Controller
             213 => ['priority' => 2], 
             316 => ['priority' => 1]
         ]);
+    }
+
+    public function user_lists()
+    {
+        $user = User::find(1);
+
+        $collections = $user->collection()->with('movie')->get();
+
+        return $collections;
+
+        return view('welcome');
     }
 }

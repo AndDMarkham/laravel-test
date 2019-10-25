@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'IndexController@index');
 
 Route::get('/api', 'ApiController@index');
 Route::get('/api/search/people', 'ApiController@search_people');
@@ -27,10 +25,17 @@ Route::get('/api/movies/list', 'MovieController@index');
 Route::get('/api/movies/cast_and_crew', 'MovieController@cast_and_crew');
 Route::get('/api/movies/show', 'MovieController@show');
 
+Route::get('/api/movie', 'MovieController@get_movie');
+
+Route::get('/api/movies/favorite', 'FavoriteMovieController@status');
+Route::post('/api/movies/favorite/toggle', 'FavoriteMovieController@toggle');
+
 Route::post('/api/collection', 'CollectionController@store');
+Route::get('/api/list/users', 'CollectionController@user_lists');
+
 
 Route::get('/api/review', 'Api\ReviewController@index');
-Route::post('/api/review', 'Api\ReviewController@store');
+Route::post('/api/review', 'ReviewController@store');
 
 Route::get('/api/rating', 'Api\RatingController@index');
 Route::post('/api/rating', 'Api\RatingController@store');
@@ -42,3 +47,9 @@ Route::put('/api/rating', 'Api\RatingController@update');
 Route::get('/api/tmd/top_rated', 'MorningWorkoutController@top_rated');
 Route::get('/api/tmd/movie_of_the_week', 'MorningWorkoutController@movie_of_the_week');
 
+Route::get('/movies', 'NewMovieController@index');
+Route::get('/movies/{id}', 'NewMovieController@show');
+
+Route::get('movies/{movie}/reviews', 'ReviewController@index');
+Route::get('movies/{movie}/reviews/create', 'ReviewController@create');
+Route::post('movies/{movie}/reviews/', 'ReviewController@store');

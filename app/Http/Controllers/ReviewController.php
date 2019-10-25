@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use \DB;
+use App\Review;
+use App\Movie;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -11,9 +14,14 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($movie)
     {
-        //
+        $selected_movie= Movie::findOrFail($movie);
+        
+        $reviews = $selected_movie->reviews()->get();
+
+        // return $reviews;
+        return view('reviews.index', compact('reviews', 'selected_movie'));
     }
 
     /**
@@ -21,9 +29,11 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($movie)
     {
-        //
+        $movie = Movie::findOrFail($movie);
+
+        return view('reviews.create', compact('movie'));
     }
 
     /**
@@ -32,9 +42,25 @@ class ReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+
+    public function store($movie, Request $request)
     {
-        //
+        $this->validate($request, [
+            'value' => 'required|numeric|min:0|max:10',
+            'text' => 'required|min:10|min:250'
+        ], [
+            'value.required' => 'Don\'t forget to rate the movie!',
+            'text.required' => 'Tell us what you thought!'
+        ]);
+
+        $review = new Review();
+        $review->user_id = rand(0, 10000);
+        $review->movie_id = $movie;
+        $review->text = $request->input('text');
+        $review->rating = $request->input('value');
+        $review->save();
+
+        return redirect(action('ReviewController@index', $movie));
     }
 
     /**
