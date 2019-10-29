@@ -51,5 +51,11 @@ Route::get('/movies', 'NewMovieController@index');
 Route::get('/movies/{id}', 'NewMovieController@show');
 
 Route::get('movies/{movie}/reviews', 'ReviewController@index');
-Route::get('movies/{movie}/reviews/create', 'ReviewController@create');
-Route::post('movies/{movie}/reviews/', 'ReviewController@store');
+Route::get('movies/{movie}/reviews/create', 'ReviewController@create')->middleware('auth');
+Route::post('movies/{movie}/reviews/', 'ReviewController@store')->middleware('auth');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/new-person', 'NewPersonController');

@@ -22,4 +22,6 @@
             </li>
         <?php endforeach; ?>
     </ul>
+
+<a href="{{action('NewMovieController@index')}}">Movies</a>
 @endsection

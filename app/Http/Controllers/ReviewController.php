@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use \DB;
 use App\Review;
 use App\Movie;
+use App\Http\Requests\ReviewRequest;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -16,12 +17,18 @@ class ReviewController extends Controller
      */
     public function index($movie)
     {
-        $selected_movie= Movie::findOrFail($movie);
-        
-        $reviews = $selected_movie->reviews()->get();
+        if (\Gate::denies('admin')) {
+            return 'Please login';
+        }
 
-        // return $reviews;
-        return view('reviews.index', compact('reviews', 'selected_movie'));
+        if(\Gate::allows('admin')) {
+            $selected_movie= Movie::findOrFail($movie);
+            
+            $reviews = $selected_movie->reviews()->get();
+
+            // return $reviews;
+            return view('reviews.index', compact('reviews', 'selected_movie'));
+        }
     }
 
     /**
@@ -43,18 +50,18 @@ class ReviewController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store($movie, Request $request)
+    public function store($movie, ReviewRequest $request)
     {
-        $this->validate($request, [
-            'value' => 'required|numeric|min:0|max:10',
-            'text' => 'required|min:10|min:250'
-        ], [
-            'value.required' => 'Don\'t forget to rate the movie!',
-            'text.required' => 'Tell us what you thought!'
-        ]);
+        // $this->validate($request, [
+        //     'value' => 'required|numeric|min:0|max:10',
+        //     'text' => 'required|min:10|min:250'
+        // ], [
+        //     'value.required' => 'Don\'t forget to rate the movie!',
+        //     'text.required' => 'Tell us what you thought!'
+        // ]);
 
         $review = new Review();
-        $review->user_id = rand(0, 10000);
+        $review->user_id = auth()->id();
         $review->movie_id = $movie;
         $review->text = $request->input('text');
         $review->rating = $request->input('value');
