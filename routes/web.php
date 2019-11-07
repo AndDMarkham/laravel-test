@@ -58,4 +58,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/new-person', 'NewPersonController');
+Route::resource('/person', 'NewPersonController');
+// Route::resource('/person/{person_id}/comments', 'PersonCommentController');
+
+Route::get('/email', 'EmailController@index');

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Person;
+use App\Profession;
 
 class NewPersonController extends Controller
 {
@@ -13,7 +15,10 @@ class NewPersonController extends Controller
      */
     public function index()
     {
-        //
+        $persons = Person::paginate(20);
+        
+        return view('person.index', compact('persons'));
+
     }
 
     /**
@@ -23,7 +28,8 @@ class NewPersonController extends Controller
      */
     public function create()
     {
-        //
+        $professions = Profession::all();
+        return view('person.create', compact('professions'));
     }
 
     /**
@@ -33,8 +39,27 @@ class NewPersonController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {   $this->validate($request, [
+        'name' => 'required|max:127',
+        'photo_url' => 'max:127'
+        ]);
+        
+        //method 1 - long
+        // $person = new Person;
+        // $person->name = $request->input('person');
+        // $person->photo_url = $request->input('photo_url');
+        // $person->biography = $request->input('biography');
+
+
+        // method 2 - less long
+        // $person = Person::create([
+        //     'person' => $request
+        // ]);
+
+        // method 3 - ideal, short
+        $person = Person::create($request->all());
+
+        return redirect(action('NewPersonController@index'));
     }
 
     /**
@@ -45,7 +70,9 @@ class NewPersonController extends Controller
      */
     public function show($id)
     {
-        //
+        $person = Person::findOrFail($id);
+
+        return view('person.show', compact('person'));
     }
 
     /**
